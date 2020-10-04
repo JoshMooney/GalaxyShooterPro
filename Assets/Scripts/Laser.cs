@@ -32,6 +32,11 @@ public class Laser : MonoBehaviour
             transform.position.y > _startingPosition.y + _despawnDistance ||
             transform.position.y < _startingPosition.y - _despawnDistance)
         {
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+            
             LogMessage("Despawned");
             Destroy(gameObject);
         }

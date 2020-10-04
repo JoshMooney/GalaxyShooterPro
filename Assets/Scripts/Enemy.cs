@@ -31,10 +31,11 @@ public class Enemy : MonoBehaviour
     void CalculateMovement()
     {
         Vector3 direction = Vector3.down;
-        transform.Translate(direction * _speed * Time.deltaTime);
+        transform.Translate(direction * (_speed * Time.deltaTime));
     }
 
-    private void OnTriggerEnter(Collider other)
+    // private void OnTriggerEnter(Collider other) Originally for 3D collision
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
