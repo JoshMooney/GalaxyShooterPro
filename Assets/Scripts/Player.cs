@@ -11,12 +11,19 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private GameObject _tripleShotPrefab;
     [SerializeField] private GameObject _shieldVisualisation;
+    [SerializeField] private GameObject[] _damangeVisualisation;
     [SerializeField] private int _lives = 3;
+    [SerializeField] private AudioClip _laserSfxClip;
 
     private float _speed;
     private float _canFire = -1;
+    private int _score = 0;
+
+    private AudioSource _audioSource;
     private SpawnManager _spawnManager;
-    
+    private UIManager _uiManager;
+    private GameManager _gameManager;
+
     private bool _isTripleShotActive = false;
     private bool _isSpeedBoostActive = false;
     private bool _isShieldActive = false;
@@ -32,7 +39,28 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Spawn manager is null", this);
         }
+
+        _uiManager = GameObject.Find("UIManager")?.GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.Log("UI Manager is null", this);
+        }     
         
+        _gameManager = GameObject.Find("GameManager")?.GetComponent<GameManager>();
+        if (_gameManager == null)
+        {
+            Debug.Log("Game Manager is null", this);
+        }
+
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            Debug.Log("AudioSource is null", this);
+        }
+        else
+        {
+            _audioSource.clip = _laserSfxClip;
+        }
     }
 
     // Update is called once per frame
@@ -67,6 +95,7 @@ public class Player : MonoBehaviour
             spawnPoint = new Vector3(0, 1.05f, 0) + transform.position;
         }
         Instantiate(bulletPrefab, spawnPoint, Quaternion.identity);
+        _audioSource.Play();
     }
 
     void CalculateMovement()
@@ -90,9 +119,19 @@ public class Player : MonoBehaviour
         }
         
         _lives -= 1;
+        if (_lives == 2)
+        {
+            _damangeVisualisation[0].SetActive(true);
+        } else if (_lives == 1)
+        {
+            _damangeVisualisation[1].SetActive(true);
+        }
+        
+        _uiManager.UpdateLives(_lives);
         if(_lives <= 0)
         {
             _spawnManager.OnPlayerDeath();
+            _gameManager.TriggerGameover();  
             Destroy(gameObject);
         }
     }
@@ -134,5 +173,11 @@ public class Player : MonoBehaviour
     {
         _isShieldActive = false;
         _shieldVisualisation.SetActive(false);
+    }
+
+    public void AddScore(int value)
+    {
+        _score += value;
+        _uiManager.UpdateScoreText(_score);
     }
 }

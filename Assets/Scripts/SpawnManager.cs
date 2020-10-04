@@ -13,13 +13,10 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] _spawnPowerups;
     [SerializeField] private GameObject _spawnPowerupContainer;
     
-
     private bool _stopSpawning = false;
-    void Start()
+
+    public void StartSpawning()
     {
-        // Spawn Enemy at the start of game
-        Spawn(_spawnEnemy, _spawnEnemyContainer);
-        
         StartCoroutine(SpawnEnemyRoutine());
         StartCoroutine(SpawnPowerupRoutine());
     }

@@ -6,7 +6,7 @@ public class Powerup : MonoBehaviour
 {
     
     [SerializeField] private float _speed = 2.5f;
-
+    [SerializeField] private AudioClip _pickupSfxClip;
     [SerializeField]
     private Type _type = Type.NIL;
     public enum Type
@@ -16,9 +16,13 @@ public class Powerup : MonoBehaviour
         Shields,
         NIL
     }
+
     void Start()
     {
-        
+        if (_pickupSfxClip == null)
+        { 
+            Debug.Log("Powerup audio clip was not assigned", this);
+        }
     }
 
     // Update is called once per frame
@@ -47,6 +51,7 @@ public class Powerup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            AudioSource.PlayClipAtPoint(_pickupSfxClip, transform.position);
             Player player = other.transform.GetComponent<Player>();
             switch (_type)
             {
